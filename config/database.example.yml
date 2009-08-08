@@ -1,0 +1,14 @@
+development:
+  adapter: sqlite3
+  database: <%= CodeNote.home_path_to('db', 'development.sqlite3') %>
+  reconnect: true
+
+production:
+  adapter: sqlite3
+  database: <%= CodeNote.home_path_to('db', 'production.sqlite3') %>
+  reconnect: true
+
+test:
+  adapter: sqlite3
+  database: ':memory:'
+  reconnect: true
