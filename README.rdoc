@@ -1,0 +1,7 @@
+= codenote
+
+Description goes here.
+
+== Copyright
+
+Copyright (c) 2009 Ben Mabey. See LICENSE for details.
