@@ -6,7 +6,7 @@ require 'codenote/runners/presentation_loader'
 module CodeNote
   module Runners
 
-  describe PresentationLoader, :type => :runner do
+  describe PresentationLoader do
 
     use_fakefs
     stub_exit!

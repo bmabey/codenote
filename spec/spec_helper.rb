@@ -9,6 +9,7 @@ require 'fakefs/safe'
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 
+Spec::Example::ExampleGroupFactory.register('codenote/runners', RunnerExampleGroup)
 Spec::Runner.configure do |config|
   config.extend FakeFSHelpers
 end
