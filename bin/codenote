@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require File.join(File.dirname(__FILE__), *%w[.. lib codenote])
+require 'codenote/runners/presentation_loader'
+CodeNote::Runners::PresentationLoader.run(ARGV)
+
+require 'codenote/application'
+
+

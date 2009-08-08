@@ -1,0 +1,1 @@
+require 'codenote/models/presentation'
