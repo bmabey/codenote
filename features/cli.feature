@@ -2,7 +2,7 @@
 Feature: CLI Server
   In order to save me time a headaches
   As a presenter of code
-  I create a presentation in plaintext a'la Slidedown and have it be served up for me
+  I create a presentation in plaintext a'la Slidedown and have CodeNote serve up for me
 
   Scenario: basic usage of 'codenote' bin
     Given a file named "presentation.md" with:

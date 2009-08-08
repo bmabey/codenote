@@ -11,13 +11,12 @@ module CodeNote
     use_fakefs
     stub_exit!
 
+
     def given_presentation_file(presentation_file, content)
-      @presentation_content = content.gsub(/^\s*\|/, '')
-      File.open(presentation_file, "w") { |f| f << @presentation_content }
+      given_presentation_content(content)
+      File.open(presentation_file, "w") { |f| f << presentation_content }
     end
 
-
-    attr_reader :presentation_content
 
     describe '::run' do
       before(:each) do
@@ -28,7 +27,6 @@ module CodeNote
         given_presentation_file 'presentation.codenote', <<-CN
         |!SLIDE
         |# The title
-        |!SLIDE
         CN
 
         when_ran_with(%w[presentation.codenote]) do
