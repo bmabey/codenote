@@ -13,7 +13,8 @@ Feature: CLI Server
       !SLIDE
       # This is second slide...
       """
-    When I run "codenote presentation.md"
+    When I run "codenote_load presentation.md"
+    And I run "codenote"
     And I visit the server's address
 
     Then I should see "This is the title slide"

@@ -2,9 +2,14 @@ Given %r{^a file named "([^"]+)" with:$} do |file_name, content|
   create_file(file_name, content)
 end
 
-When %r{^I run "codenote ([^"]+)"$} do |args|
+When %r{^I run "codenote(?: ([^"]+)|)"$} do |args|
   codenote args
 end
+
+When %r{^I run "codenote_load ([^"]+)"$} do |args|
+  codenote_load args
+end
+
 
 #Then /^the (.*) should match (.*)$/ do |stream, string_or_regex|
   #written(stream).should smart_match(string_or_regex)
