@@ -1,4 +1,3 @@
-@wip
 Feature: CLI Server
   In order to save me time a headaches
   As a presenter of code

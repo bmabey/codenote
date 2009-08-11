@@ -1,0 +1,9 @@
+!!!
+%html
+  %head
+    %title= "#{presentation.title} - #{presentation.presenter}"
+    %link{:href => '/main.css', :rel => 'stylesheet', :type => 'text/css'}
+  %body
+    #container
+      #header
+      #content= @slide.html

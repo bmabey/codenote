@@ -15,10 +15,6 @@ class Presentation < ActiveRecord::Base
     self.find(:first, :include => [:slides])
   end
 
-  def full_title
-    @full_title ||= "#{title} - #{presenter}"
-  end
-
   def add_slide(slide_image)
     slides << (slide =Slide.new(:image => slide_image))
     slide
@@ -28,7 +24,7 @@ class Presentation < ActiveRecord::Base
     slides.update_all({:viewable_by_audience => false})
   end
 
-  def slide(number, options)
+  def slide(number, options = {})
     return if (number-1) < 0
     if slide = slides[number-1]
       slide.viewable_by_audience! if options[:presenter]

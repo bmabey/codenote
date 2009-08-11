@@ -7,7 +7,7 @@ Then /^I should see "([^\"]*)"$/ do |text|
   browser.html.should  =~ /#{text}/
 end
 
-Then /^the title of the page should be "([^\"]*)"$/ do |arg1|
-  pending
+Then /^the title of the page should be "([^\"]*)"$/ do |title|
+  browser.title.should == title
 end
 

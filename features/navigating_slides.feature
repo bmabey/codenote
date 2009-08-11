@@ -1,5 +1,5 @@
-@proposed
-Feature: Serving slides
+@wip
+Feature: Navigating slides
   In order to improve a presentation's experience and effectiveness
   As a presenter I want audience members
   To follow along with my slides but not skip ahead

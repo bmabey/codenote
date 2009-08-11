@@ -1,9 +1,16 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib')
+ENV['RACK_ENV'] = 'cucumber'
 require 'codenote'
+FileUtils.rm_f(CodeNote.root_path_to('db','cucumber.sqlite3'))
 
 require 'spec/expectations'
 require 'rbconfig'
 require 'culerity'
+
+#Sinatra::Base.set :environment, :test
+#Sinatra::Base.set :run, false
+#Sinatra::Base.set :raise_errors, true
+
 
 
 class CodeNoteWorld
@@ -140,7 +147,7 @@ class CodeNoteWorld
   def fork_ruby(args, stderr=nil)
     config       = ::Config::CONFIG
     interpreter  = File::join(config['bindir'], config['ruby_install_name']) + config['EXEEXT']
-    cmd = "#{interpreter} #{args}"
+    cmd = "RACK_ENV=cucumber #{interpreter} #{args}"
     cmd << " 2> #{stderr}" unless stderr.nil?
     `#{cmd}`
   end

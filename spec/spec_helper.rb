@@ -8,6 +8,7 @@ require 'codenote'
 require 'rubygems'
 require 'fakefs/safe'
 require 'database_cleaner'
+require 'nokogiri'
 
 
 ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
