@@ -84,26 +84,34 @@ describe CodeNote do
 
   describe '::logger' do
 
+    before(:each) do
+      Sinatra::Application.stub!(:environment).and_return(:test)
+      Logger.stub!(:new).and_return(@logger = mock('logger')) 
+    end
+
     use_fakefs
 
     it "uses STDOUT when in development mode" do
+      Sinatra::Application.stub!(:environment).and_return(:development)
       Logger.should_receive(:new).with(STDOUT)
       CodeNote.logger
     end
 
     it "places the logs based on the environment name in the home log path when not in development" do
-      Sinatra::Application.stub!(:environment).and_return(:test)
       ENV['CODENOTE_HOME'] = '/tmp'
       Logger.should_receive(:new).with("/tmp/log/test.log")
       CodeNote.logger
     end
 
     it "creates the log path in the home dir when it doesn't exist" do
-      Sinatra::Application.stub!(:environment).and_return(:test)
       ENV['CODENOTE_HOME'] = '/tmp'
       FileUtils.rm_rf('/tmp/log')
       CodeNote.logger
-      File.exist?('/tmp/log').should be_true
+      File.exists?('/tmp/log').should be_true
+    end
+
+    it "returns the logger" do
+     CodeNote.logger.should == @logger
     end
 
   end
