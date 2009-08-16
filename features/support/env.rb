@@ -1,10 +1,11 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib')
 ENV['RACK_ENV'] = 'cucumber'
 require 'codenote'
+require 'codenote/models'
 FileUtils.rm_f(CodeNote.root_path_to('db','cucumber.sqlite3'))
 
 require 'spec/expectations'
-require 'rbconfig'
+#require 'celerity'
 require 'culerity'
 
 #Sinatra::Base.set :environment, :test
@@ -18,14 +19,14 @@ class CodeNoteWorld
   include Spec::Matchers
 
   extend Forwardable
-  def_delegators CodeNoteWorld, :working_dir, :codenote_bin, :codenote_load_bin, :culerity_server
+  def_delegators CodeNoteWorld, :working_dir, :codenote_bin, :codenote_load_bin, :culerity_server, :kill_codenote_server
 
   def self.culerity_server
     @culerity_server ||= Culerity::run_server
   end
 
-  def self.close_server
-    @culerity_server.close if @culerity_server
+  def self.close_culerity_server
+    @culerity_server.exit_server if @culerity_server
   end
 
   def self.working_dir
@@ -40,21 +41,41 @@ class CodeNoteWorld
     @codenote_bin ||= bin('codenote')
   end
 
+  def self.start_codenote_server
+    `#{codenote_bin} --no-launch`
+  end
+
+  def self.kill_codenote_server
+    `#{codenote_bin} --kill`
+  end
+
   def self.codenote_load_bin
     @codenote_load_bin ||= bin('codenote_load')
   end
 
   def initialize
     @host = "http://localhost:5678"
+    @browsers = []
   end
 
   def browser
-    @browser ||= Culerity::RemoteBrowserProxy.new culerity_server, {:browser => :firefox}
+    @browser ||= new_browser
   end
 
-  def close_browser
-    @browser.exit if @browser
+  def presenter_browser
+    @presenter_browser ||= new_browser.tap { |b| login_presenter(b) }
   end
+
+  def login_presenter(browser = browser)
+    browser.goto path('/secret_login')
+    browser.text_field(:label, 'Password').set('presentation_zen09')
+    browser.button(:value, 'Login').click
+  end
+
+  def close_browsers
+    culerity_server.close_browsers
+  end
+
 
   def path(relative_path)
     @host + relative_path
@@ -99,58 +120,72 @@ class CodeNoteWorld
   # These methods are basically support methods for the public methods which I 
   # expect the steps to use.  (i.e. steps don't use the methods below)
   private
-    def in_working_dir(&block)
-      Dir.chdir(working_dir, &block)
-    end
 
-    #def background_jobs
-    #  @background_jobs ||= []
-    #end
+  def in_working_dir(&block)
+    Dir.chdir(working_dir, &block)
+  end
 
-    #def run_in_background(command)
-      #in_working_dir do
-      #pid = fork
-        #if pid
-          #background_jobs << pid
-        #else
-          #STDOUT.replace(output = File.open("#{working_dir}/server.log", "w"))
-          #STDERR.replace(output)
-          #ENV['RACK_ENV'] = 'test'
-          #exec command
-          #exit 0
-        #end
-      #end
-      #sleep 2.0
-    #end
+  def new_browser
+    Culerity::RemoteBrowserProxy.new(culerity_server, {:browser => :firefox}).tap { |b| @browsers << b }
+  end
 
-    #def terminate_background_jobs
-      #if @background_jobs
-        #@background_jobs.each do |pid|
-          #Process.kill(Signal.list['TERM'], pid)
-        #end
-      #end
-    #end
+  def ruby(command, interpreter = 'current')
+    run("#{RubyInterpreters[interpreter]} #{command}")
+  end
 
-  ## it seems like this, and the last_* methods, could be moved into RubyForker-- is that being used anywhere but the features?
-  def ruby(command)
-    stderr_file = Tempfile.new('codenote')
-    stderr_file.close
+  def run(command)
     Dir.chdir(working_dir) do
-      @stdout = fork_ruby(command, stderr_file.path)
+      stderr_file = Tempfile.new('codenote')
+      stderr_file.close
+      @stdout = `RACK_ENV=cucumber #{command} 2> #{stderr_file.path}`
+      @stderr = File.read(stderr_file.path)
+      @exit_code = $?.to_i
     end
-    @stderr = IO.read(stderr_file.path)
-    @exit_code = $?.to_i
   end
 
-  ## Forks a ruby interpreter with same type as ourself.
-  ## jruby will fork jruby, ruby will fork ruby etc.
-  def fork_ruby(args, stderr=nil)
-    config       = ::Config::CONFIG
-    interpreter  = File::join(config['bindir'], config['ruby_install_name']) + config['EXEEXT']
-    cmd = "RACK_ENV=cucumber #{interpreter} #{args}"
-    cmd << " 2> #{stderr}" unless stderr.nil?
-    `#{cmd}`
+end
+
+
+require 'rbconfig'
+class RubyInterpreters
+  def self.[](interpreter_name)
+    interpreters[interpreter_name] or raise("Opps, no interpreter was defined for '#{interpreter_name}'. Please set one by setting a  #{interpreter_name.upcase}_BIN evn var.")
   end
+
+  def self.interpreters
+    @interpreters ||= {
+      'current' => current_ruby,
+      'jruby' => locate_jruby,
+      'mri' => locate_mri
+    }
+  end
+
+  def self.current_ruby
+    @current_ruby ||= (
+      config       = ::Config::CONFIG
+      current = File::join(config['bindir'], config['ruby_install_name']) + config['EXEEXT']
+    )
+  end
+
+  def self.locate_jruby
+    return ENV["JRUBY_BIN"] if ENV["JRUBY_BIN"]
+    return current_ruby if RUBY_PLATFORM =~ /java/
+  end
+
+  def self.locate_mri
+    return ENV["MRI_BIN"] if ENV["MRI_BIN"]
+    return current_ruby unless RUBY_PLATFORM =~ /java/
+    try_locations("/System/Library/Frameworks/Ruby.framework/1.8/Current/usr/bin/ruby")
+  end
+
+  def self.try_locations(*paths)
+    paths.each do |path|
+      return path if File.exist?(path)
+    end
+    nil
+  end
+
+  private_class_method :try_locations, :locate_jruby, :locate_mri, :current_ruby
 
 end
 
@@ -165,12 +200,16 @@ end
 
 
 After do
-  `#{codenote_bin} --kill`
-  close_browser
-  #terminate_background_jobs
+  close_browsers
 end
 
+# On load
+CodeNoteWorld.start_codenote_server
+
 at_exit do
-  CodeNoteWorld.close_server
+  puts "Closing down the codenote server..."
+  CodeNoteWorld.kill_codenote_server
+  puts "Closing down the Culerity server..."
+  CodeNoteWorld.close_culerity_server
 end
 

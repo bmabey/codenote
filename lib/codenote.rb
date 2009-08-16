@@ -1,8 +1,9 @@
 require 'rubygems'
 require 'sinatra/base'
 require 'fileutils'
-#require 'haml/util'
-#require 'haml/engine'
+require 'core_ext/object'
+require 'haml/util'
+require 'haml/engine'
 require 'activerecord'
 
 module CodeNote

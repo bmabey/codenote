@@ -4,8 +4,8 @@ require 'codenote/models'
 describe Presentation do
 
 
-  def new_presentation
-    Presentation.new(:title => 'title', :presenter => 'presenter name')
+  def new_presentation(attributes={})
+    Presentation.new({:title => 'title', :presenter => 'presenter name'}.merge(attributes))
   end
 
   def presentation
@@ -13,9 +13,11 @@ describe Presentation do
   end
 
   describe '::current' do
-    it "returns the presentation defined by ::current=" do
+    it "returns the presentation most recently defined by ::current=" do
       Presentation.current = presentation
-      Presentation.current.should == presentation
+      another_presentation = new_presentation(:title => 'The best presentation ever')
+      Presentation.current = another_presentation
+      Presentation.current.should == another_presentation
     end
   end
 
@@ -29,6 +31,14 @@ describe Presentation do
       original_presentation.reload
       original_presentation.should_not be_current
     end
+
+    it "ensures that the first slide of the current presentation is viewable by the audience" do
+      presentation = new_presentation(:slides => [Slide.new(:viewable_by_audience => false)])
+      Presentation.current = presentation
+
+      presentation.slides.first.should be_viewable_by_audience
+    end
+
 
   end
 

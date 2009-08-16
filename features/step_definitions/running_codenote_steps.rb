@@ -1,3 +1,7 @@
+Given /^that the codenote server is not running$/ do
+  kill_codenote_server
+end
+
 Given %r{^a file named "([^"]+)" with:$} do |file_name, content|
   create_file(file_name, content)
 end

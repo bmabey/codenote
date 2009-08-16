@@ -1,2 +1,2 @@
-default: -f profile --tags ~@proposed,~@wip
+default: -f pretty --tags ~@proposed,~@wip
 wip: --wip --tags @wip

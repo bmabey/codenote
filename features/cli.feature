@@ -1,10 +1,11 @@
 Feature: CLI Server
-  In order to save me time a headaches
+  In order to save me time and headaches
   As a presenter of code
   I create a presentation in plaintext a'la Slidedown and have CodeNote serve up for me
 
-  Scenario: basic usage of 'codenote' bin
-    Given a file named "presentation.md" with:
+  Scenario: basic presentation loading and viewing
+    Given that the codenote server is not running
+    And a file named "presentation.md" with:
       """
       !TITLE My Presentation
       !PRESENTER Ben Mabey

@@ -4,20 +4,25 @@ class Presentation < ActiveRecord::Base
 
   def self.current=(presentation)
     if self.current && self.current.id != presentation.id
-      self.current.update_attribute(:current, false)
+      update_all('current = 0', :current => true)
     end
 
+    presentation.make_first_slide_viewable
     presentation.current = true
     presentation.save!
   end
 
   def self.current
-    self.find(:first, :include => [:slides])
+    self.find(:first, :include => [:slides], :conditions => {:current => true})
   end
 
   def add_slide(slide_image)
     slides << (slide =Slide.new(:image => slide_image))
     slide
+  end
+
+  def make_first_slide_viewable
+    slides.first.viewable_by_audience! if slides.first
   end
 
   def reset!

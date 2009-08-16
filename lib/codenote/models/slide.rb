@@ -9,7 +9,7 @@ class Slide < ActiveRecord::Base
   end
 
   def viewable_by_audience!
-    self.update_attribute(:viewable_by_audience, true)
+    update_attribute(:viewable_by_audience, true)
   end
 
   def html
