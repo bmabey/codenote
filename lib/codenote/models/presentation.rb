@@ -16,11 +16,6 @@ class Presentation < ActiveRecord::Base
     self.find(:first, :include => [:slides], :conditions => {:current => true})
   end
 
-  def add_slide(slide_image)
-    slides << (slide =Slide.new(:image => slide_image))
-    slide
-  end
-
   def make_first_slide_viewable
     slides.first.viewable_by_audience! if slides.first
   end

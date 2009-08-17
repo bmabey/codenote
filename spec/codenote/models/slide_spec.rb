@@ -11,8 +11,8 @@ describe Slide do
   end
 
   describe '#viewable_by_audience!' do
-    it "should make it viewable_by_audience and persist the change" do
-      slide = Slide.create(:image => 'foo.png')
+    it "marks the slide as viewable and persists the change" do
+      slide = Slide.create!(:source => 'Cheese')
 
       slide.viewable_by_audience!
       slide.reload

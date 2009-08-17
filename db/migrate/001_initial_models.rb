@@ -7,7 +7,6 @@ class InitialModels < ActiveRecord::Migration
     end
 
     create_table :slides do |t|
-      t.string  :image
       t.string  :source
       t.string  :classes
       t.integer :number, :presentation_id
