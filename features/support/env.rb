@@ -207,9 +207,9 @@ end
 CodeNoteWorld.start_codenote_server
 
 at_exit do
-  puts "Closing down the codenote server..."
+  puts "Shutting down the codenote server..."
   CodeNoteWorld.kill_codenote_server
-  puts "Closing down the Culerity server..."
+  puts "Shutting down the Culerity server..."
   CodeNoteWorld.close_culerity_server
 end
 

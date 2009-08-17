@@ -38,8 +38,6 @@ describe Presentation do
 
       presentation.slides.first.should be_viewable_by_audience
     end
-
-
   end
 
   describe '#add_slide' do
@@ -59,33 +57,36 @@ describe Presentation do
 
   describe '#slide' do
 
-    it "should retutn the slide indexed at 1" do
-      presentation.add_slide "1.png"
-
-      presentation.slide(1, :presenter => true).image.should == "1.png"
+    context 'when asking for presenter' do
+      it "return the slide indexed at the provided number" do
+        presentation.slides.build(:source => 'foo')
+        presentation.slide(1, :presenter => true).source.should == "foo"
+      end
     end
 
-    it "should return nil when the slide number does not exist" do
+    it "returns nil when the slide number does not exist" do
       presentation.slide(1, :presenter => true).should be_nil
     end
 
-    it "should return nil when a negative number is given" do
-      presentation.add_slide "1.png"
+    it "returns nil when a negative number or zero is given" do
+      presentation.slides.build(:source => 'foo')
       presentation.slide(0, :presenter => true).should be_nil
+      presentation.slide(-1, :presenter => true).should be_nil
     end
 
-    # integreation tests here, testing slide and presentation
-    it "should return a slide which reveals it's image to anyone after the presenter has requested it" do
-      presentation.add_slide "1.png"
+    context 'when asking for audience member (not a presenter)' do
 
-      presentation.slide(1, :presenter => true).image.should == "1.png"
-      presentation.slide(1, :presenter => false).image.should == "1.png"
-    end
+      it "returns the real slide if the presenter has showed it" do
+        presentation.slides.build(:source => 'My Slide')
+        presentation.slide(1, :presenter => true).source.should == "My Slide"
+        presentation.slide(1, :presenter => false).source.should == "My Slide"
+      end
 
-    it "should return a slide whose image's true location is not revealed if a presenter has not yet requested it" do
-      presentation.add_slide "1.png"
-
-      presentation.slide(1, :presenter => false).image.should == "no_peeking.png"
+      it "returns the No Peeking slide when the requested slide is not viewable by audience" do
+        slide = presentation.slides.build(:source => 'My Slide')
+        slide.should_not be_viewable_by_audience # sanity check
+        presentation.slide(1, :presenter => false).source.should =~ /no peeking/i
+      end
     end
 
   end

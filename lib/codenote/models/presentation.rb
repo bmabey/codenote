@@ -31,10 +31,13 @@ class Presentation < ActiveRecord::Base
 
   def slide(number, options = {})
     return if (number-1) < 0
-    if slide = slides[number-1]
-      slide.viewable_by_audience! if options[:presenter]
+    return unless slide = slides[number-1]
+    if options[:presenter]
+      slide.viewable_by_audience!
+      slide
+    else
+      slide.viewable_by_audience? ? slide : no_peeking_slide
     end
-    slide
   end
 
   def slide_after(number)
@@ -53,6 +56,10 @@ class Presentation < ActiveRecord::Base
 
   def next_slide_image
     slides.size + 1
+  end
+
+  def no_peeking_slide
+    Slide.new(:source => "# No Peeking!", :classes => "no_peeking")
   end
 
 end

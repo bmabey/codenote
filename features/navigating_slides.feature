@@ -32,7 +32,7 @@ Feature: Navigating slides
     Then I should see the 2nd slide
 
 
-  Scenario: joining the pary late
+  Scenario: joining the party late
     The latest slide displayed by the presenter should be displayed to a new visitor.
 
     Given a presentation with 3 slides
@@ -53,7 +53,6 @@ Feature: Navigating slides
 
     Then I should see the 1st slide
 
-  @wip
   Scenario: trying to go ahead
     Given a presentation with 4 slides
     And the presenter has showed the first 2 slides
@@ -62,7 +61,7 @@ Feature: Navigating slides
 
     When I click "Next"
 
-    Then I should see the No Peeking slide
+    Then I should see "No Peeking!"
 
 
 
