@@ -30,14 +30,33 @@ end
 
 begin
   require 'cucumber/rake/task'
-  Cucumber::Rake::Task.new(:features)
+  namespace :cucumber do
+    Cucumber::Rake::Task.new(:ok, 'Run features that should pass') do |t|
+      t.fork = true
+      t.cucumber_opts = "--no-profile --tags ~@wip --strict --format #{ENV['CUCUMBER_FORMAT'] || 'pretty'}"
+    end
+
+    Cucumber::Rake::Task.new(:wip, 'Run features that are being worked on') do |t|
+      t.fork = true
+      t.cucumber_opts = "--no-profile --tags @wip:2 --wip --format #{ENV['CUCUMBER_FORMAT'] || 'pretty'}"
+    end
+
+    desc 'Run all features'
+    task :all => [:ok, :wip]
+  end
+
+  desc 'Alias for cucumber:ok'
+  task :cucumber => 'cucumber:ok'
+
 rescue LoadError
-  task :features do
-    abort "Cucumber is not available. In order to run features, you must: sudo gem install cucumber"
+  desc 'cucumber rake task not available (cucumber not installed)'
+  task :cucumber do
+    abort 'Cucumber rake task is not available. Be sure to install cucumber as a gem or plugin'
   end
 end
 
-task :default => :spec
+
+task :default => [:spec, 'cucumber:all']
 
 require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|
