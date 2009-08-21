@@ -4,6 +4,8 @@ require 'codenote'
 require 'codenote/models'
 FileUtils.rm_f(CodeNote.root_path_to('db','cucumber.sqlite3'))
 
+require File.dirname(__FILE__) + '/tcp_socket'
+
 require 'spec/expectations'
 #require 'celerity'
 require 'culerity'
@@ -19,7 +21,11 @@ class CodeNoteWorld
   include Spec::Matchers
 
   extend Forwardable
-  def_delegators CodeNoteWorld, :working_dir, :codenote_bin, :codenote_load_bin, :culerity_server, :kill_codenote_server
+  def_delegators CodeNoteWorld, :working_dir, :codenote_bin, :codenote_load_bin, :culerity_server, :kill_codenote_server, :port
+
+  def self.port
+    5678
+  end
 
   def self.culerity_server
     @culerity_server ||= Culerity::run_server
@@ -45,6 +51,19 @@ class CodeNoteWorld
     `#{codenote_bin} --no-launch`
   end
 
+  def self.start_codenote_app_in_process
+    require 'codenote/application'
+    Thread.new do
+      CodeNote::Application.set :logging, false
+      CodeNote::Application.set :port, port
+      logger = Logger.new(CodeNote.root_path_to('tmp', 'features_server.log'))
+      CodeNote::Application.use Rack::CommonLogger, logger
+      puts 'Starting in-process server...'
+      CodeNote::Application.run!
+    end
+    TCPSocket.wait_for_service_with_timeout :host => "localhost", :port => port, :timeout => 5
+  end
+
   def self.kill_codenote_server
     `#{codenote_bin} --kill`
   end
@@ -54,7 +73,7 @@ class CodeNoteWorld
   end
 
   def initialize
-    @host = "http://localhost:5678"
+    @host = "http://localhost:#{port}"
     @browsers = []
   end
 
@@ -203,13 +222,14 @@ After do
   close_browsers
 end
 
+
 # On load
-CodeNoteWorld.start_codenote_server
+CodeNoteWorld.start_codenote_app_in_process
+
 
 at_exit do
-  puts "Shutting down the codenote server..."
-  CodeNoteWorld.kill_codenote_server
   puts "Shutting down the Culerity server..."
   CodeNoteWorld.close_culerity_server
 end
+
 
