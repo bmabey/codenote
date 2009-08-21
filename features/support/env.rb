@@ -1,6 +1,7 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib')
 ENV['RACK_ENV'] = 'cucumber'
 require 'codenote'
+require 'codenote/presentation_loader'
 require 'codenote/models'
 FileUtils.rm_f(CodeNote.root_path_to('db','cucumber.sqlite3'))
 
