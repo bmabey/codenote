@@ -20,11 +20,11 @@ Feature: Twitter Quiz
       Lets actually start now.
       """
     And the presenter is on the 3rd slide
-    And I am following along
 
   @wip
   Scenario: waiting for an answer
-    Given no tweets have been tweeted
+    Given no tweets have been tweeted that match the '#free_stuff "arron burr"' search
+    When I go to the 3rd slide
     Then I should see "And the winner is..."
     And I should see an ajax spinner
 

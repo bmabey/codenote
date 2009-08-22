@@ -44,6 +44,14 @@ When %r{^I go to the slide server's address$} do
   browser.goto path('/')
 end
 
+When /^I go to the (\d+)(?:st|nd|rd|th) slide$/ do |slide_number|
+  browser.goto path("/slides/#{slide_number}")
+end
+
+Then /^I should see an ajax spinner$/ do
+  browser.image(:id, 'spinner').exists?.should be_true
+end
+
 
 Then %r{^I should see the (\d+)(?:st|nd|rd|th) slide$} do |slide_number|
   browser.should contain("Slide Number #{slide_number}")
@@ -52,9 +60,6 @@ end
 Then /^I should see the No Peeking slide$/ do
   browser.should contain("No Peeking!")
 end
-
-
-
 
 When /^the presenter continues$/ do
   presenter_browser.link(:text, "Next").click

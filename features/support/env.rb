@@ -10,6 +10,7 @@ require File.dirname(__FILE__) + '/tcp_socket'
 require 'spec/expectations'
 #require 'celerity'
 require 'culerity'
+require 'faketwitter'
 
 #Sinatra::Base.set :environment, :test
 #Sinatra::Base.set :run, false
