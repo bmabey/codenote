@@ -21,14 +21,13 @@ Feature: Twitter Quiz
       """
     And the presenter is on the 3rd slide
 
-  @wip
   Scenario: waiting for an answer
     Given no tweets have been tweeted that match the '#free_stuff "arron burr"' search
     When I go to the 3rd slide
     Then I should see "And the winner is..."
     And I should see an ajax spinner
 
-  @proposed
+  @wip
   Scenario: winner is displayed
     When the following tweets are tweeted that match the '#free_stuff "arron burr"' search
       | Name        | Tweet                                                | Time          |

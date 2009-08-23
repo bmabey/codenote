@@ -1,0 +1,3 @@
+#And the winner is...
+<img src='/images/spinner.gif' id='spinner' alt='Searching twitter...' />
+

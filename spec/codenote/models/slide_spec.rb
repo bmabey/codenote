@@ -54,6 +54,7 @@ describe Slide do
 
       slide.html.should == 'HTML'
     end
+
   end
 
   describe '#dynamic_options=' do
@@ -68,10 +69,30 @@ describe Slide do
     end
 
     it "ensures that the parsed information persists" do
-      slide = Slide.new(:dynamic_options => " DummyDynamicSlide 'arg1', 'arg2'")
+      slide = Slide.new(:dynamic_options => " DummyDynamicSlide 'arg1', 'arg2'", :source => 'foo')
       slide.save!
       slide.dynamic_slide_class.should == DummyDynamicSlide
       slide.dynamic_args.should == ['arg1', 'arg2']
+    end
+
+
+  end
+
+  describe 'upon creating' do
+    use_fakefs
+    context 'when the source is blank for a dynamic slide' do
+      it "sets the source based off of template in corresponding view dir" do
+        slide = Slide.new(:dynamic_options => " DummyDynamicSlide 'arg1', 'arg2'")
+
+        source_in_tempalte = "# Hello, this is my initial content"
+
+        dir = CodeNote.home_path_to(*%w[views dynamic_slides dummy_dynamic_slide])
+        FileUtils.mkdir_p(dir)
+        f = File.open("#{dir}/initial_content.md", "w") { |f| f << source_in_tempalte }
+
+        slide.save!
+        slide.source.should == source_in_tempalte
+      end
     end
 
   end
