@@ -1,6 +1,9 @@
 require File.expand_path(File.dirname(__FILE__) + '../../spec_helper')
 require 'codenote/presentation_loader'
 
+class DummyDynamicSlide
+end
+
 module CodeNote
   describe PresentationLoader do
     describe '::setup' do
@@ -31,6 +34,7 @@ module CodeNote
       def presentation
         @presentation ||= PresentationLoader.new(presentation_content).presentation
       end
+
       it "has a slide for each !SLIDE section" do
         given_presentation_content(<<-CN)
         |!SLIDE
@@ -40,6 +44,17 @@ module CodeNote
         CN
 
         presentation.should have(2).slides
+      end
+
+      xit "creates a slide for each !DYNAMIC-SLIDE section" do
+        given_presentation_content(<<-CN)
+        |!DYNAMIC-SLIDE DummyDynamicSlide 'arg1', 'arg2'
+        |!DYNAMIC-SLIDE DummyDynamicSlide 'arg1', 'arg2'
+        |!SLIDE
+        | Hello
+        CN
+
+        presentation.should have(3).slides
       end
 
       it "records the source for the slide" do

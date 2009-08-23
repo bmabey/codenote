@@ -10,6 +10,8 @@ module CodeNote
       extract_classes
       @title = extract('TITLE')
       @presenter = extract('PRESENTER')
+      ensure_first_slide_is_marked
+
     end
 
     def presentation
@@ -21,13 +23,23 @@ module CodeNote
     end
 
     def slides
-      lines.map { |source| Slide.new(:source => source, :classes => @classes.shift) }
+      [].tap do |slides|
+        @presentation_content.each_line do |line|
+          if line =~ /^!SLIDE$/
+            slides << Slide.new(:classes => @classes.shift, :source => "")
+          else
+            slides.last.source << line
+          end
+        end
+      end
     end
 
     private
 
-    def lines
-      @lines ||= @presentation_content.split(/^!SLIDE$\n/).reject { |line| line.empty? }
+    def ensure_first_slide_is_marked
+      unless @presentation_content.match(/(.*)$/)[1] == "!SLIDE"
+        @presentation_content = "!SLIDE\n" + @presentation_content
+      end
     end
 
     def extract(keyword)

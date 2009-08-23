@@ -14,7 +14,7 @@ Feature: Twitter Quiz
       !SLIDE
       # Who shot Alexander Hamilton?
       ## You must use #free_stuff in your tweet.
-      !DYNAMIC-SLIDE TwitterQuiz #free_stuff "aaron burr"
+      !DYNAMIC-SLIDE TwitterQuiz '#free_stuff "aaron burr"'
       !SLIDE
       Okay, that was fun.
       Lets actually start now.
