@@ -1,6 +1,9 @@
 require File.expand_path(File.dirname(__FILE__) + '../../../spec_helper')
 require 'codenote/models'
 
+class DummyDynamicSlide
+end
+
 describe Slide do
   it "is not be viewable by default" do
     Slide.new.should_not be_viewable_by_audience
@@ -51,7 +54,26 @@ describe Slide do
 
       slide.html.should == 'HTML'
     end
+  end
 
+  describe '#dynamic_options=' do
+    it "parses the given string to set the dynamic slide class" do
+      slide = Slide.new(:dynamic_options => " DummyDynamicSlide 'arg1', 'arg2'")
+      slide.dynamic_slide_class.should == DummyDynamicSlide
+    end
+
+    it "parses the given string to set the dynamic slide args" do
+      slide = Slide.new(:dynamic_options => " DummyDynamicSlide 'arg1', 'arg2'")
+      slide.dynamic_args.should == ['arg1', 'arg2']
+    end
+
+    it "ensures that the parsed information persists" do
+      slide = Slide.new(:dynamic_options => " DummyDynamicSlide 'arg1', 'arg2'")
+      slide.save!
+      slide.dynamic_slide_class.should == DummyDynamicSlide
+      slide.dynamic_args.should == ['arg1', 'arg2']
+    end
 
   end
+
 end

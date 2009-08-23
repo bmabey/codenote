@@ -57,6 +57,7 @@ module CodeNote
         presentation.should have(3).slides
       end
 
+
       it "records the source for the slide" do
         given_presentation_content(<<-CN)
         |!SLIDE
@@ -65,13 +66,14 @@ module CodeNote
         presentation.slides.first.source.should == "# Hello!\n"
       end
 
-      it "records the classes for the slides" do
+      it "records the classes for the regular (non-dynamic) slides" do
         given_presentation_content(<<-CN)
         |!SLIDE important message
         |# Hello!
         CN
         presentation.slides.first.classes.should == 'important message'
       end
+
 
       it "extracts the presentation's title" do
         given_presentation_content(<<-CN)

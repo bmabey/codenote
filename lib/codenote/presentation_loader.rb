@@ -24,7 +24,7 @@ module CodeNote
       [].tap do |slides|
         @presentation_content.each_line do |line|
           if line =~ /^!(DYNAMIC-)?SLIDE(.*)$/
-            options = $1 ? {:dynamic_slide_class => $1, :dynamic_args => $2} : {:classes => $2.strip }
+            options = $1 ? {:dynamic_options => $2} : {:classes => $2.strip }
             slides << Slide.new(options.merge(:source => ""))
           else
             slides.last.source << line
