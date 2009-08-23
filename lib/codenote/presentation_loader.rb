@@ -36,7 +36,7 @@ module CodeNote
     private
 
     def ensure_first_slide_is_marked
-      unless @presentation_content.match(/(.*)$/)[1] =~ /!SLIDE/
+      unless @presentation_content.match(/(.*)$/)[1] =~ /SLIDE/
         @presentation_content = "!SLIDE\n" + @presentation_content
       end
     end

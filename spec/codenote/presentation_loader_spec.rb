@@ -46,7 +46,7 @@ module CodeNote
         presentation.should have(2).slides
       end
 
-      xit "creates a slide for each !DYNAMIC-SLIDE section" do
+      it "creates a slide for each !DYNAMIC-SLIDE section" do
         given_presentation_content(<<-CN)
         |!DYNAMIC-SLIDE DummyDynamicSlide 'arg1', 'arg2'
         |!DYNAMIC-SLIDE DummyDynamicSlide 'arg1', 'arg2'
