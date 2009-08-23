@@ -7,11 +7,9 @@ module CodeNote
 
     def initialize(presentation_content)
       @presentation_content = presentation_content
-      extract_classes
       @title = extract('TITLE')
       @presenter = extract('PRESENTER')
       ensure_first_slide_is_marked
-
     end
 
     def presentation
@@ -25,8 +23,9 @@ module CodeNote
     def slides
       [].tap do |slides|
         @presentation_content.each_line do |line|
-          if line =~ /^!SLIDE$/
-            slides << Slide.new(:classes => @classes.shift, :source => "")
+          if line =~ /^!(DYNAMIC-)?SLIDE(.*)$/
+            options = $1 ? {:dynamic_slide_class => $1, :dynamic_args => $2} : {:classes => $2.strip }
+            slides << Slide.new(options.merge(:source => ""))
           else
             slides.last.source << line
           end
@@ -37,22 +36,13 @@ module CodeNote
     private
 
     def ensure_first_slide_is_marked
-      unless @presentation_content.match(/(.*)$/)[1] == "!SLIDE"
+      unless @presentation_content.match(/(.*)$/)[1] =~ /!SLIDE/
         @presentation_content = "!SLIDE\n" + @presentation_content
       end
     end
 
     def extract(keyword)
       @presentation_content.sub!(/^!#{keyword}\s+(.*)$\n/,'') ? $1 : ''
-    end
-
-    def extract_classes
-      @classes = []
-      @presentation_content.gsub!(/^!SLIDE[^\w]([a-z\s]*)$/) do |_|
-        @classes << $1
-        "!SLIDE"
-      end
-      @classes
     end
 
   end
