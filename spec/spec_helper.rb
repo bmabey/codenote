@@ -22,7 +22,7 @@ Spec::Runner.configure do |config|
   config.include SpecHelpers
 
   config.before(:suite) do
-    DatabaseCleaner.clean_with(:truncation) # Not really needed when using in-memory DB...
+    DatabaseCleaner.clean_with(:truncation, :except => %w[schema_migrations]) # Not really needed when using in-memory DB...
     DatabaseCleaner.strategy = :transaction
   end
 

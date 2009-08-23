@@ -1,9 +1,9 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib')
 ENV['RACK_ENV'] = 'cucumber'
+FileUtils.rm_f(File.join(File.dirname(__FILE__), '..', '..', 'db','cucumber.sqlite3')) # so schema data is removed
 require 'codenote'
 require 'codenote/presentation_loader'
 require 'codenote/models'
-FileUtils.rm_f(CodeNote.root_path_to('db','cucumber.sqlite3'))
 
 require File.dirname(__FILE__) + '/tcp_socket'
 
@@ -11,6 +11,14 @@ require 'spec/expectations'
 #require 'celerity'
 require 'culerity'
 require 'faketwitter'
+require 'database_cleaner'
+require 'database_cleaner/cucumber'
+
+DatabaseCleaner.strategy = :truncation, {:except => %w[schema_migrations]}
+DatabaseCleaner.clean
+
+
+
 
 #Sinatra::Base.set :environment, :test
 #Sinatra::Base.set :run, false
