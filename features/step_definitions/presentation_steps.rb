@@ -1,10 +1,10 @@
 Given /^a presentation with (\d+) slides$/ do |number_of_slides|
-  presentation = Presentation.new(:title => "Sample Presentation", :presenter => "Mr. Presenter")
+  presentation = CodeNote::Presentation.new(:title => "Sample Presentation", :presenter => "Mr. Presenter")
   number_of_slides.to_i.times do |i|
-    presentation.slides << Slide.new(:source => "Slide Number #{i+1}")
+    presentation.slides << CodeNote::Slide.new(:source => "Slide Number #{i+1}")
   end
 
-  Presentation.current = presentation
+  CodeNote::Presentation.current = presentation
 end
 
 Given /^the following presentation$/ do |presentation|
