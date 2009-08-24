@@ -9,7 +9,8 @@ class InitialModels < ActiveRecord::Migration
     create_table :slides do |t|
       t.string  :source, :classes, :dynamic_slide_class, :dynamic_args
       t.integer :number, :presentation_id
-      t.boolean :viewable_by_audience, :default => false
+      t.boolean :viewable_by_audience, :dynamically_updated, :default => false
+      t.datetime :dynamically_updated_at, :default => nil
     end
   end
 

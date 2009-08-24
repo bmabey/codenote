@@ -18,23 +18,21 @@ DatabaseCleaner.strategy = :truncation, {:except => %w[schema_migrations]}
 DatabaseCleaner.clean
 
 
-
-
-#Sinatra::Base.set :environment, :test
-#Sinatra::Base.set :run, false
 #Sinatra::Base.set :raise_errors, true
-
-
 
 class CodeNoteWorld
   include Spec::Expectations
   include Spec::Matchers
 
   extend Forwardable
-  def_delegators CodeNoteWorld, :working_dir, :codenote_bin, :codenote_load_bin, :culerity_server, :kill_codenote_server, :port
+  def_delegators CodeNoteWorld, :working_dir, :codenote_bin, :codenote_load_bin, :culerity_server, :kill_codenote_server
 
   def self.port
-    5678
+    8042
+  end
+
+  def port
+    @port || self.class.port
   end
 
   def self.culerity_server
@@ -105,18 +103,17 @@ class CodeNoteWorld
     culerity_server.close_browsers
   end
 
-
   def path(relative_path)
     @host + relative_path
   end
-
 
   def codenote_load(args)
     ruby("#{codenote_load_bin} #{args}")
   end
 
   def codenote(args)
-    ruby("#{codenote_bin} --no-launch #{args}")
+    @port = 8043
+    ruby("#{codenote_bin} --no-launch #{args} --port #{port}")
     sleep 2
   end
 
@@ -235,7 +232,7 @@ end
 
 # On load
 CodeNoteWorld.start_codenote_app_in_process
-
+#FakeWeb.allow_net_connect = false
 
 at_exit do
   puts "Shutting down the Culerity server..."

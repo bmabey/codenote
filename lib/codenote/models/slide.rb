@@ -1,4 +1,5 @@
 require 'makers-mark'
+require 'codenote/job_manager'
 
 class Slide < ActiveRecord::Base
   belongs_to :presentation
@@ -29,13 +30,8 @@ class Slide < ActiveRecord::Base
   end
 
   def html
-    if dynamic?
-      Kernel.fork do
-        dynamic_slide_class.new(*dynamic_args).update(self)
-        Kernel.exit! # to avoid any at_exit hooks
-      end
-    end
-     MakersMark::Generator.new(source).to_html
+    CodeNote::JobManager.update_slide(self) if dynamic?
+    MakersMark::Generator.new(source).to_html
   end
 
   # TODO: Move this render and view finding logic out of Slide- SRP anyone?
