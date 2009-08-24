@@ -229,7 +229,7 @@ end
 
 
 After do
-  FakeWeb.clean_registry
+  FakeTwitter.reset
   close_browsers
 end
 
