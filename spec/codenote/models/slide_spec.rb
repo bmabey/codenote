@@ -74,7 +74,13 @@ describe Slide do
       slide.dynamic_slide_class.should == DummyDynamicSlide
       slide.dynamic_args.should == ['arg1', 'arg2']
     end
+  end
 
+  describe '#dynamic?' do
+    it "indicates if the slide is expected to be updated while being shown" do
+      Slide.new(:dynamic_options => " DummyDynamicSlide", :source => 'foo').should be_dynamic
+      Slide.new.should_not be_dynamic
+    end
 
   end
 

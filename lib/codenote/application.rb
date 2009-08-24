@@ -23,7 +23,7 @@ module CodeNote
       end
     end
 
-    get %r{/slides/(\d+)} do
+    get %r{^/slides/(\d+)$} do
       slide_number = params[:captures].first.to_i
       @slide = presentation.slide(slide_number, :presenter => presenter?)
       @next_slide = presentation.slide_after(slide_number)

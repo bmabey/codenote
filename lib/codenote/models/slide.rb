@@ -18,18 +18,26 @@ class Slide < ActiveRecord::Base
 
 
   def dynamic_slide_class
-    self['dynamic_slide_class'].constantize
+    @dynamic_slide_class ||= (
+      begin
+        self['dynamic_slide_class'].constantize
+      rescue
+        require "codenote/dynamic_slides/#{self['dynamic_slide_class'].underscore}"
+        retry
+      end
+    )
   end
 
   def html
      MakersMark::Generator.new(source).to_html
   end
 
-  private
-
   def dynamic?
     !self['dynamic_slide_class'].blank?
   end
+
+  private
+
 
   def define_initial_slide_source_for_dynamic_slides
     return if !dynamic? || !source.blank?

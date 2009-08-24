@@ -110,23 +110,27 @@ end
 #
 # Javascript
 #
-Given /From the "(.*)" link I fire the "(.*)" event/  do |text, event|
-  browser.link(:text , text).fire_event(event)
-end
+#Given /From the "(.*)" link I fire the "(.*)" event/  do |text, event|
+  #browser.link(:text , text).fire_event(event)
+#end
 
-Given /I click the "(.*)" span/  do |text|
-  browser.span(:text, text).click
-end
+#Given /I click the "(.*)" span/  do |text|
+  #browser.span(:text, text).click
+#end
 
-Given /I wait (\d+) seconds*/ do |time|
-  sleep time.to_i
-end
+#Given /I wait (\d+) seconds*/ do |time|
+  #sleep time.to_i
+#end
 
-Given /^I wait until "([^\"]*)"$/ do |div|
-  7.times do |i|
-    break if browser.div(:id, div).exists?
-    i == 7 ? raise(Watir::Exception::UnknownObjectException) : sleep(1)
-  end
+#Given /^I wait until "([^\"]*)"$/ do |div|
+  #7.times do |i|
+    #break if browser.div(:id, div).exists?
+    #i == 7 ? raise(Watir::Exception::UnknownObjectException) : sleep(1)
+  #end
+#end
+#
+When /^I wait until the slide is updated$/ do
+  browser.wait_until { browser.div(:id, 'slide-container').attribute_string =~ /rel="([^"]*)"/ && $1 == 'updated' }
 end
 
 When /^I hit the "([^\"]*)" key$/ do |key_name|

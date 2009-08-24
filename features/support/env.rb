@@ -66,7 +66,7 @@ class CodeNoteWorld
     Thread.new do
       CodeNote::Application.set :logging, false
       CodeNote::Application.set :port, port
-      logger = Logger.new(CodeNote.root_path_to('tmp', 'features_server.log'))
+      logger = Logger.new(CodeNote.root_path_to('log', 'cucumber.log'))
       CodeNote::Application.use Rack::CommonLogger, logger
       puts 'Starting in-process server...'
       CodeNote::Application.run!
@@ -229,9 +229,9 @@ end
 
 
 After do
+  FakeWeb.clean_registry
   close_browsers
 end
-
 
 # On load
 CodeNoteWorld.start_codenote_app_in_process

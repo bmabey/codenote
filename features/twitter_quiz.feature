@@ -29,11 +29,12 @@ Feature: Twitter Quiz
 
   @wip
   Scenario: winner is displayed
+    Given I am on the 3rd slide
     When the following tweets are tweeted that match the '#free_stuff "arron burr"' search
-      | Name        | Tweet                                                | Time          |
+      | From User   | Text                                                 | Created At    |
       | @adams      | Aaron Burr shot Alexander Hamilton #free_stuff"      | 1 minute ago  |
       | @jefferson  | Aaron Burr shot Alexander Hamilton #free_stuff"      | 2 minutes ago |
-    And I wait until the page is updated
+    And I wait until the slide is updated
 
     Then I should see @jefferson's tweet along with his avatar
 
