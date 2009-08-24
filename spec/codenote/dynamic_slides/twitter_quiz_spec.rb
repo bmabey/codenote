@@ -2,6 +2,8 @@ require File.expand_path(File.dirname(__FILE__) + '../../../spec_helper')
 require 'codenote/dynamic_slides/twitter_quiz'
 require 'faketwitter'
 
+module CodeNote
+
 describe TwitterQuiz do
   describe '#update' do
     before(:each) { @slide = mock('slide', :update_with => nil) }
@@ -52,3 +54,5 @@ describe TwitterQuiz do
     end
   end
 end
+
+end # module CodeNote

@@ -1,6 +1,8 @@
 require File.expand_path(File.dirname(__FILE__) + '../../../spec_helper')
 require 'codenote/models'
 
+module CodeNote
+
 describe Presentation do
 
 
@@ -156,3 +158,5 @@ describe Presentation do
   end
 
 end
+
+end # module CodeNote

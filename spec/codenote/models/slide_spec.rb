@@ -1,6 +1,8 @@
 require File.expand_path(File.dirname(__FILE__) + '../../../spec_helper')
 require 'codenote/models'
 
+module CodeNote
+
 class DummyDynamicSlide
 end
 
@@ -60,7 +62,7 @@ describe Slide do
         # given
         slide = Slide.create!(:dynamic_options => " DummyDynamicSlide 'arg1', 'arg2'", :source => 'foo')
         # expect
-        CodeNote::JobManager.should_receive(:update_slide).with(slide)
+        JobManager.should_receive(:update_slide).with(slide)
         # when
         slide.html
       end
@@ -153,3 +155,5 @@ describe Slide do
   end
 
 end
+
+end # module CodeNote

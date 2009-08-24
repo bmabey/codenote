@@ -9,7 +9,9 @@ require 'rubygems'
 require 'fakefs/safe'
 require 'database_cleaner'
 require 'nokogiri'
+require 'faketwitter'
 
+FakeWeb.allow_net_connect = false
 
 ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
 
