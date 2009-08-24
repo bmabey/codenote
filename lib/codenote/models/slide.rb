@@ -38,17 +38,34 @@ class Slide < ActiveRecord::Base
      MakersMark::Generator.new(source).to_html
   end
 
+  # TODO: Move this render and view finding logic out of Slide- SRP anyone?
+  def update_with(render_options)
+    render_options[:template] ||= 'success'
+    template = dynamic_slide_view("update_#{render_options[:template]}.haml")
+    File.open(update_slide_path, 'w') do |update|
+      update << Haml::Engine.new(template).render(Object.new, render_options[:locals])
+    end
+  end
+
   def dynamic?
     !self['dynamic_slide_class'].blank?
   end
 
   private
 
-
   def define_initial_slide_source_for_dynamic_slides
     return if !dynamic? || !source.blank?
-    self.source = File.read(CodeNote.home_path_to('views', 'dynamic_slides', self['dynamic_slide_class'].underscore, 'initial_content.md'))
+    self.source = dynamic_slide_view('initial_content.md')
   end
 
+  def dynamic_slide_view(view_name)
+    File.read(CodeNote.home_path_to('views', 'dynamic_slides', self['dynamic_slide_class'].underscore, view_name))
+  end
+
+  def update_slide_path
+    base_path = CodeNote.home_path_to('public', 'slides', self.id)
+    FileUtils.mkdir_p(base_path) unless File.exist?(base_path)
+    base_path + '/update'
+  end
 
 end

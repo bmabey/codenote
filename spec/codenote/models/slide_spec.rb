@@ -88,6 +88,44 @@ describe Slide do
 
   end
 
+  describe '#update_with' do
+    use_fakefs
+    before(:each) do
+      @slide = Slide.create!(:dynamic_options => "DummyDynamicSlide", :source => 'foo')
+      # given
+      success_template = "%h1= foo"
+      dir = CodeNote.home_path_to(*%w[views dynamic_slides dummy_dynamic_slide])
+      FileUtils.mkdir_p(dir)
+      f = File.open("#{dir}/update_success.haml", "w") { |f| f << success_template }
+    end
+
+
+    def saved_update
+      @saved_update ||= File.read(CodeNote.home_path_to('public', 'slides', @slide.id, 'update'))
+    end
+
+    it "saves the rendering of the specified template with the provided locals for the dynamic class" do
+      # given
+      success_template = "%h1= foo"
+      dir = CodeNote.home_path_to(*%w[views dynamic_slides dummy_dynamic_slide])
+      FileUtils.mkdir_p(dir)
+      f = File.open("#{dir}/update_success.haml", "w") { |f| f << success_template }
+      # when
+      @slide.update_with(:template => 'success', :locals => {:foo => 'Hello World!'})
+      # then
+      saved_update.should == "<h1>Hello World!</h1>\n"
+    end
+
+    it "defaults the template to success" do
+      # when
+      @slide.update_with(:locals => {:foo => 'Hello World!'})
+      # then
+      saved_update.should == "<h1>Hello World!</h1>\n"
+    end
+
+
+  end
+
   describe '#dynamic_options=' do
     it "parses the given string to set the dynamic slide class" do
       slide = Slide.new(:dynamic_options => " DummyDynamicSlide 'arg1', 'arg2'")
@@ -121,14 +159,14 @@ describe Slide do
       it "sets the source based off of template in corresponding view dir" do
         slide = Slide.new(:dynamic_options => " DummyDynamicSlide 'arg1', 'arg2'")
 
-        source_in_tempalte = "# Hello, this is my initial content"
+        source_in_template = "# Hello, this is my initial content"
 
         dir = CodeNote.home_path_to(*%w[views dynamic_slides dummy_dynamic_slide])
         FileUtils.mkdir_p(dir)
-        f = File.open("#{dir}/initial_content.md", "w") { |f| f << source_in_tempalte }
+        f = File.open("#{dir}/initial_content.md", "w") { |f| f << source_in_template }
 
         slide.save!
-        slide.source.should == source_in_tempalte
+        slide.source.should == source_in_template
       end
     end
 
