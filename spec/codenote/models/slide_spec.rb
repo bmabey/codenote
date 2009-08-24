@@ -3,8 +3,7 @@ require 'codenote/models'
 
 module CodeNote
 
-class DummyDynamicSlide
-end
+class DummyDynamicSlide; end
 
 describe Slide do
   it "is not be viewable by default" do
