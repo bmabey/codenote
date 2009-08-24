@@ -130,7 +130,7 @@ end
 #end
 #
 When /^I wait until the slide is updated$/ do
-  browser.wait_until { browser.div(:id, 'slide-container').attribute_string =~ /rel="([^"]*)"/ && $1 == 'updated' }
+  browser.wait_until { browser.div(:id, 'slide-container').attribute_value('rel') == 'updated' }
 end
 
 When /^I hit the "([^\"]*)" key$/ do |key_name|
