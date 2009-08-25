@@ -32,14 +32,27 @@
               type    : 'text'
           }, options);
 
-      elem.settings.ajaxMethod = /post/i.test(elem.settings.method) ? jQuery.post : jQuery.get;
+      elem.settings.ajaxMethod = jQuery.ajax
       elem.settings.prevContent = '';
       elem.settings.originalMinTimeout = elem.settings.minTimeout;
 
       start();
 
+      function updateTimeout() {
+        if (elem.settings.minTimeout < elem.settings.maxTimeout) {
+          elem.settings.minTimeout = elem.settings.minTimeout * elem.settings.multiplier
+        }
+
+        if (elem.settings.minTimeout > elem.settings.maxTimeout) {
+          elem.settings.minTimeout = elem.settings.maxTimeout
+        }
+
+        elem.settings.periodicalUpdater = setTimeout(start, elem.settings.minTimeout);
+      }
+
       function start() {
-        elem.settings.ajaxMethod(elem.settings.url, elem.settings.sendData, function (data) {
+        elem.settings.ajaxMethod({url:elem.settings.url,data:elem.settings.sendData,dataType:elem.settings.type,
+          success: function(data) {
           if (elem.settings.prevContent != data) {
             elem.settings.prevContent = data;
             if (callback) {
@@ -49,17 +62,10 @@
             elem.settings.minTimeout = elem.settings.originalMinTimeout;
             elem.settings.periodicalUpdater = setTimeout(start, elem.settings.minTimeout);
           } else {
-            if (elem.settings.minTimeout < elem.settings.maxTimeout) {
-              elem.settings.minTimeout = elem.settings.minTimeout * elem.settings.multiplier
-            }
-
-            if (elem.settings.minTimeout > elem.settings.maxTimeout) {
-              elem.settings.minTimeout = elem.settings.maxTimeout
-            }
-
-            elem.settings.periodicalUpdater = setTimeout(start, elem.settings.minTimeout);
+            updateTimeout();
           }
-        }, elem.settings.type);
+        },
+        error:function() { updateTimeout(); }});
       } // start()
     });
 
