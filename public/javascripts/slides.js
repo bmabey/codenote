@@ -81,10 +81,11 @@
     if (dir == 1) {
       if ($("#next").length == 0) { return false; }
       document.location=$("#next").attr('href');
-    } else {
+    } else if (dir == -1){
       if ($("#previous").length == 0) { return false; }
       document.location=$("#previous").attr('href');
-    }
+    } else { return false; }
+    return true;
 
     /*if (dir = DIRECTIONS[event.which || event]) {*/
     /*if*/
@@ -92,22 +93,41 @@
     /*}*/
   }
 
+  function gotoPreviousSlide() {
+    clickLink($("#previous"));
+  }
+
+  function gotoNextSlide() {
+    clickLink($("#next"));
+  }
+
+  function clickLink(elem) {
+    if (elem.length == 0) { return false; }
+    document.location= elem.attr('href');
+  }
+
   function clickMove(e) {
     if (e.pageX < ($(window).width() / 2)) {
-      move('left');
+      gotoPreviousSlide();
     } else {
-      move('right');
+      gotoNextSlide();
     }
   }
 
   $(window).bind('resize', function() { adjustSlides(); });
-  $(document).bind('keydown', move);
+  //$(document).bind('keydown', move);
+  //
+  $(document).bind('keydown', 'right', gotoNextSlide);
+  $(document).bind('keydown', 'space', gotoNextSlide);
+  $(document).bind('keydown', 'return', gotoNextSlide);
+  $(document).bind('keydown', 'left', gotoPreviousSlide);
   $(document).bind('hash.changed', adjustSlides);
   $(document).bind('click', clickMove);
   $(document).ready(function() {
     setIndex(getIndex() || 0);
     $(this).trigger('hash.changed');
     $("#header").toggle();
+    adjustSlides();
     if (document.location.search.indexOf('notes') == 1) {
       $('.notes').show();
     }
