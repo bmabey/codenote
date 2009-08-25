@@ -15,8 +15,10 @@ module CodeNote
     end
 
     def self.kill_jobs
+      return unless @jobs
       puts "Killing all the jobs..."
-      @jobs.each { |job| job.kill } if @jobs
+      @jobs.each { |job| job.kill }
+      @jobs = nil
     end
 
     class Job

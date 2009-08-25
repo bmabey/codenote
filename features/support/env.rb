@@ -43,13 +43,13 @@ class CodeNoteWorld
   def self.close_culerity_server
     return unless @culerity_server
     require 'timeout'
-    timeout(5) do
+    timeout(3) do
       puts "Shutting down the Culerity server..."
       @culerity_server.exit_server
     end
 
   rescue Timeout::Error
-    puts "Shutting down of Culerity server timed out... You may want to check if any java processes are running"
+    puts "Shutting down of Culerity server timed out. You may want to verify that no java processes are still running."
   end
 
   def self.working_dir
@@ -246,6 +246,7 @@ CodeNoteWorld.start_codenote_app_in_process
 
 
 at_exit do
+  CodeNote::JobManager.kill_jobs # This needs to be called first so all other subprocesses let go of server IO object.
   CodeNoteWorld.close_culerity_server
 end
 
