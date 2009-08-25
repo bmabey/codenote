@@ -77,9 +77,19 @@
       right: 1
     }
 
-    if (dir = DIRECTIONS[event.which || event]) {
-      setIndex(getIndex() + dir);
+    var dir = DIRECTIONS[event.which || event]
+    if (dir == 1) {
+      if ($("#next").length == 0) { return false; }
+      document.location=$("#next").attr('href');
+    } else {
+      if ($("#previous").length == 0) { return false; }
+      document.location=$("#previous").attr('href');
     }
+
+    /*if (dir = DIRECTIONS[event.which || event]) {*/
+    /*if*/
+    /*setIndex(getIndex() + dir);*/
+    /*}*/
   }
 
   function clickMove(e) {
@@ -97,6 +107,7 @@
   $(document).ready(function() {
     setIndex(getIndex() || 0);
     $(this).trigger('hash.changed');
+    $("#header").toggle();
     if (document.location.search.indexOf('notes') == 1) {
       $('.notes').show();
     }

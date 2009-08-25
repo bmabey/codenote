@@ -130,14 +130,15 @@ end
 #end
 #
 When /^I wait until the slide is updated$/ do
-  browser.wait_until { browser.div(:id, 'slide-container').attribute_value('rel') == 'updated' }
+  slide_content_div = browser.div(:id, 'slide-container').divs.first
+  browser.wait_until { slide_content_div.attribute_value('rel') == 'updated' }
 end
 
 When /^I hit the "([^\"]*)" key$/ do |key_name|
   key_mappings = {"spacebar" => " "}
   key = key_name.size == 1 ? key_name : key_mappings[key_name]
   raise "No mapping for the key #{key_name} is defined..." unless key
-  browser.page.getFocusedElement.type(key)
+  browser.page.getFocusedElement.type(" ")
   #browser.send_keys(key_code)
 end
 

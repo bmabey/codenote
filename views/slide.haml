@@ -12,11 +12,11 @@
       %script{ :type => "text/javascript", :charset => "utf-8" }
       :javascript
         jQuery(document).ready(function () {
-          jQuery('#slide-container').ekko({
+          jQuery('#slide-container > div').ekko({
           url : '/slides/#{@slide.id}/update',
           minTimeout : 500,
           }, function (data) {
-            $('#slide-container').empty().append(data).attr('rel', 'updated');
+            $('#slide-container > div').empty().append(data).attr('rel', 'updated');
           });
         });
   %body
