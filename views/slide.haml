@@ -4,6 +4,8 @@
     %title= "#{presentation.title} - #{presentation.presenter}"
     %link{ :href => "/stylesheets/slides.css", :rel => "stylesheet", :media => "screen", :type => "text/css" }
     %script{ :type => "text/javascript", :src => "/javascripts/jquery-1.3.2.js" }
+    %script{ :type => "text/javascript", :src => "/javascripts/jquery.easing.js" }
+    %script{ :type => "text/javascript", :src => "/javascripts/jquery.hash-changed.js" }
     %script{ :type => "text/javascript", :src => "/javascripts/slides.js" }
     - if @slide.dynamic?
       %script{ :type => "text/javascript", :src => "/javascripts/jquery.ekko.js" }
@@ -18,6 +20,7 @@
           });
         });
 
+
   %body
     #header
       -if @previous_slide
@@ -26,5 +29,5 @@
         %a{:href => "/slides/#{@next_slide}"} Next
     #slides
       #track
-        #slide-container{ :classes => @slide.classes }
-          %div{ :id => "slide-#{@slide.id}", :classes => 'content'}~ @slide.html
+        #slide_container{:class => @slide.classes}
+          %div{ :id => "slide-#{@slide.id}", :class => 'content'}~ @slide.html
