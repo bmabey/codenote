@@ -12,7 +12,7 @@ module CodeNote
 
       while tweets.empty?
         tweets = client.query(@query)
-        Kernel.sleep 0.5 if tweets.empty?
+        Kernel.sleep 1 if tweets.empty?
       end
 
       slide.update_with(:locals => {:tweet => tweets.last})

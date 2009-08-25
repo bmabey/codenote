@@ -41,14 +41,14 @@ describe TwitterQuiz do
     end
 
     it "sleeps each time before it requeries twitter" do
-       # given
+      # given
       FakeTwitter.register_searches('cheese', [
         {:results => []},
         {:results => []},
         {:results => [{:text => 'just tweetin about cheese'}]}
       ])
       # expect
-      Kernel.should_receive(:sleep).with(0.5).twice
+      Kernel.should_receive(:sleep).with(1).twice
       # when
       TwitterQuiz.new('cheese').update(@slide)
     end

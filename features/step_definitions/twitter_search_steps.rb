@@ -12,8 +12,8 @@ When %r{^the following tweets are tweeted that match the '([^']*)' search$} do |
 end
 
 Then %r{^I should see @([^']+)'s tweet along with his avatar$} do |user|
-  exptected_tweet = FakeTwitter.tweets_from(user).first
-  browser.should contain(exptected_tweet['text'])
-  browser.image(:src, expected_tweet['profile_image_url']).exists?.should be_true
+  tweet = FakeTwitter.tweets_from(user).first
+  browser.should contain(tweet['text'])
+  browser.image(:src, tweet['profile_image_url']).exists?.should be_true
 end
 

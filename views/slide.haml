@@ -11,7 +11,7 @@
       :javascript
         jQuery(document).ready(function () {
           jQuery('#slide-container').ekko({
-          url : '/slides/#{@slide.number}/update',
+          url : '/slides/#{@slide.id}/update',
           minTimeout : 500,
           }, function (data) {
             $('#slide-container').empty().append(data).attr('rel', 'updated');

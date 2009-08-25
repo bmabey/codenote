@@ -40,6 +40,12 @@ Given /^the presenter is on the (\d+)(?:st|nd|rd|th) slide$/ do |slide_number|
   Given "the presenter has showed the first #{slide_number} slides"
 end
 
+When /^the presenter goes to the (\d+)(?:st|nd|rd|th) slide$/ do |slide_number|
+  Given "the presenter has showed the first #{slide_number} slides"
+end
+
+
+
 When %r{^I go to the slide server's address$} do
   browser.goto path('/')
 end

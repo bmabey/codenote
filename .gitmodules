@@ -1,0 +1,3 @@
+[submodule "vendor/acts_as_state_machine"]
+	path = vendor/acts_as_state_machine
+	url = git://github.com/omghax/acts_as_state_machine.git

@@ -2,6 +2,7 @@ $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib')
 ENV['RACK_ENV'] = 'cucumber'
 FileUtils.rm_f(File.join(File.dirname(__FILE__), '..', '..', 'db','cucumber.sqlite3')) # so schema data is removed
 require 'codenote'
+require 'codenote/application'
 require 'codenote/presentation_loader'
 require 'codenote/models'
 
@@ -40,7 +41,15 @@ class CodeNoteWorld
   end
 
   def self.close_culerity_server
-    @culerity_server.exit_server if @culerity_server
+    return unless @culerity_server
+    require 'timeout'
+    timeout(5) do
+      puts "Shutting down the Culerity server..."
+      @culerity_server.exit_server
+    end
+
+  rescue Timeout::Error
+    puts "Shutting down of Culerity server timed out... You may want to check if any java processes are running"
   end
 
   def self.working_dir
@@ -227,6 +236,7 @@ end
 
 After do
   FakeTwitter.reset
+  FileUtils.rm_rf CodeNote.root_path_to('public', 'slides')
   close_browsers
 end
 
@@ -234,8 +244,8 @@ end
 CodeNoteWorld.start_codenote_app_in_process
 #FakeWeb.allow_net_connect = false
 
+
 at_exit do
-  puts "Shutting down the Culerity server..."
   CodeNoteWorld.close_culerity_server
 end
 

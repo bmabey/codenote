@@ -45,14 +45,22 @@ describe JobManager do
       when_updating_slide { Kernel.should_receive(:exit!) }
     end
 
-    xit "prevents the same slide from being process at the same time" do
-      # expect
-      @dynamic_slide_object.should_receive(:update).once
-      # when
+    it "marks the slide as updated" do
       JobManager.update_slide(@slide)
-      JobManager.update_slide(@slide)
+      @slide.should be_updated
     end
 
+  end
+
+  describe '::update_slide' do # need new example group to avoid other setup
+    it "prevents the same slide from being process at the same time" do
+      slide = Slide.create!(:dynamic_options => "DummyDynamicSlide", :source => 'foo')
+      # expect
+      Kernel.should_receive(:fork).once.and_return(nil)
+      # when
+      JobManager.update_slide(slide)
+      JobManager.update_slide(slide)
+    end
   end
 end
 

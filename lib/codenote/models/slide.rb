@@ -9,6 +9,13 @@ module CodeNote
     serialize :dynamic_args, Array
     before_create :define_initial_slide_source_for_dynamic_slides
 
+    acts_as_state_machine :initial => :not_updated, :column => 'status'
+    state :not_updated
+    state :being_updated
+    state :updated
+    event(:updating) { transitions :to => :being_updated, :from => :not_updated }
+    event(:updated)  { transitions :to => :updated, :from => :being_updated }
+
     def viewable_by_audience!
       update_attribute(:viewable_by_audience, true)
     end
@@ -61,7 +68,7 @@ module CodeNote
     end
 
     def update_slide_path
-      base_path = CodeNote.home_path_to('public', 'slides', self.id)
+      base_path = CodeNote.home_path_to('public', 'slides', id.to_s)
       FileUtils.mkdir_p(base_path) unless File.exist?(base_path)
       base_path + '/update'
     end
