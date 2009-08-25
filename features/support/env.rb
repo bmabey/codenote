@@ -19,8 +19,6 @@ DatabaseCleaner.strategy = :truncation, {:except => %w[schema_migrations]}
 DatabaseCleaner.clean
 
 
-#Sinatra::Base.set :raise_errors, true
-
 class CodeNoteWorld
   include Spec::Expectations
   include Spec::Matchers
