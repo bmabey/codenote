@@ -19,15 +19,13 @@
             $('#slide-container').empty().append(data).attr('rel', 'updated');
           });
         });
-
-
   %body
     #header
       -if @previous_slide
-        %a{:href => "/slides/#{@previous_slide}"} Previous
+        %a{:href => "/slides/#{@previous_slide}", :id => "previous"} Previous
       -if @next_slide
-        %a{:href => "/slides/#{@next_slide}"} Next
+        %a{:href => "/slides/#{@next_slide}", :id => "next"} Next
     #slides
       #track
-        #slide_container{:class => @slide.classes}
+        #slide-container{:class => @slide.classes}
           %div{ :id => "slide-#{@slide.id}", :class => 'content'}~ @slide.html
