@@ -7,7 +7,7 @@ class InitialModels < ActiveRecord::Migration
     end
 
     create_table :slides do |t|
-      t.string  :source, :classes, :dynamic_slide_class, :dynamic_args, :status
+      t.string  :source, :classes, :dynamic_slide_class, :dynamic_args, :status, :html
       t.integer :number, :presentation_id
       t.boolean :viewable_by_audience, :default => false
     end

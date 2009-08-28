@@ -39,8 +39,11 @@ module CodeNote
     end
 
     def html
+      return self['html'] unless self['html'].blank?
       CodeNote::JobManager.update_slide(self) if dynamic?
-      MakersMark::Generator.new(source).to_html
+      self.html = MakersMark::Generator.new(source).to_html
+      self.save!
+      self.html
     end
 
     # TODO: Move this render and view finding logic out of Slide- SRP anyone?
