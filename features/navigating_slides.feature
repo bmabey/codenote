@@ -43,7 +43,7 @@ Feature: Navigating slides
 
     Then I should see the 2nd slide
 
-
+  @wip
   Scenario: navigating back
     Given a presentation with 3 slides
     And the presenter has showed the first 2 slides
