@@ -59,6 +59,7 @@
   }
 
   var adjustSlides = function() {
+    return true;
     var dimensions = slideDimensions();
 
     setSlideDimensions();
